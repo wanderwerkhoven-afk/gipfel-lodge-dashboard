@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gipfel Lodge — Excel Dashboard</title>
+  <link rel="stylesheet" href="./CSS/styles.css" />
+
+  <!-- Excel reader -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__title">Gipfel Lodge — Dashboard</div>
+      <div class="brand__sub">Upload vaste Excel-structuur → trends, omzet, bezetting & planning</div>
+    </div>
+
+    <div class="topbar__controls">
+      <label class="upload-btn">
+        <input id="fileInput" type="file" accept=".xlsx,.xls" />
+        Upload
+      </label>
+
+      <div class="seg">
+        <button id="modeGross" class="seg__btn seg__btn--active" type="button">Bruto</button>
+        <button id="modeNet" class="seg__btn" type="button">Netto</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- KPI cards -->
+    <section class="cards">
+      <!-- Boekingen -->
+      <div class="card">
+        <div class="card__label">Boekingen</div>
+        <div id="kpiBookings" class="card__value">—</div>
+        <div class="card__sub">excl. eigen</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Eigen boekingen</div>
+        <div id="kpiOwnerBookings" class="card__value">—</div>
+      </div>
+
+      <!-- Nachten -->
+      <div class="card">
+        <div class="card__label">Nachten geboekt</div>
+        <div id="kpiNights" class="card__value">—</div>
+        <div class="card__sub">excl. eigen</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Nachten zelf geboekt</div>
+        <div id="kpiOwnerNights" class="card__value">—</div>
+      </div>
+
+      <!-- Bruto omzet -->
+      <div class="card">
+        <div class="card__label">Omzet (bruto)</div>
+        <div id="kpiGrossRevenue" class="card__value">—</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Gem. omzet / nacht</div>
+        <div id="kpiGrossRevPerNight" class="card__value">—</div>
+      </div>
+
+      <!-- Netto omzet -->
+      <div class="card">
+        <div class="card__label">omzet (netto)</div>
+        <div id="kpiNetRevenue" class="card__value">—</div>
+      </div>
+      <div class="card">
+        <div class="card__label">Gem. netto omzet / nacht</div>
+        <div id="kpiNetRevPerNight" class="card__value">—</div>
+      </div>
+    </section>
+
+
+    <!-- Charts grid -->
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Omzet per maand</div>
+        <div class="panel__body">
+          <canvas id="chartRevenueMonth" height="150"></canvas>
+          <div class="hint">Tip: switch tussen Bruto/Netto bovenin.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Boekingen & nachten per maand</div>
+        <div class="panel__body">
+          <canvas id="chartBookingsNights" height="150"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Lead time (dagen tussen boeken en aankomst)</div>
+        <div class="panel__body">
+          <canvas id="chartLeadTime" height="160"></canvas>
+          <div class="hint">Geeft inzicht in last-minute vs vroegboekers.</div>
+        </div>
+      </div>
+    </section>
+
+<!-- (OMZET PER KANAAL is voorlopig minder relevant, geen data beschikbaar. Kan altijd later nog toegevoegd worden)
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Omzet per kanaal</div>
+        <div class="panel__body">
+          <canvas id="chartRevenueChannel" height="150"></canvas>
+        </div>
+      </div>
+    </section>
+-->
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Gastenverdeling (boekingen per groepsgrootte)</div>
+        <div class="panel__body">
+          <canvas id="chartGuestPie" height="150"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Vrije nachten per week (planning & kortingskansen)</div>
+        <div class="panel__body">
+          <canvas id="chartFreeWeeks" height="170"></canvas>
+          <div class="hint">0 = volledig volgeboekt, 7 = hele week vrij.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__title">Vrije periodes (gaps) — direct actie</div>
+      <div class="panel__body">
+        <div id="gapsWrap" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Details table -->
+    <section class="panel">
+      <div class="panel__title">Details</div>
+      <div class="panel__body">
+        <div id="tableWrap" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Booking cumulatief chart -->
+    <section class="grid">
+      <div class="panel">
+        <div class="panel__title">Cumulatieve omzet per boeking</div>
+        <div class="panel__body">
+          <canvas id="chartCumulative" height="160"></canvas>
+          <div class="hint">Hover op een punt voor omzet, datum en cumulatief totaal.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Log -->
+    <section class="panel">
+      <div class="panel__title">Log</div>
+      <div class="panel__body">
+        <pre id="log" class="log">Klaar om een Excel te uploaden…</pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="./JS/app.js"></script>
+</body>
+</html>
