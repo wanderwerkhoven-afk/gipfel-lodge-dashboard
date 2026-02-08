@@ -84,13 +84,34 @@
     <!-- Charts grid -->
     <section class="grid">
       <div class="panel">
-        <div class="panel__title">Omzet per maand</div>
+        <div class="panel__header">
+          <div class="panel__title">Omzet per maand</div>
+
+          <div class="panel__actions">
+            <button
+              class="icon-btn"
+              type="button"
+              data-action="download"
+              data-target="chartRevenueMonth"
+              aria-label="Download grafiek"
+              title="Download als PNG"
+            >
+              <img
+                class="icon-btn__icon"
+                src="./assets/icons/download.png"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+
         <div class="panel__body">
-          <canvas id="chartRevenueMonth" height="150"></canvas>
+          <canvas id="chartRevenueMonth"></canvas>
           <div class="hint">Tip: switch tussen Bruto/Netto bovenin.</div>
         </div>
       </div>
     </section>
+
 
     <section class="grid">
       <div class="panel">
@@ -100,7 +121,6 @@
         </div>
       </div>
     </section>
-    
 
     <section class="grid">
       <div class="panel">
