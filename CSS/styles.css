@@ -129,23 +129,33 @@ body{
 .panel__title{
   margin:0;
   font-weight:850;
-  white-space:nowrap;
+  line-height:1.15;
+
+  flex:1;                          /* titel neemt beschikbare ruimte */
+  min-width:0;                     /* 🔑 nodig zodat wrap/ellipsis werkt in flex */
+  white-space:normal;              /* ✅ mag naar 2 regels */
+  overflow-wrap:anywhere;          /* breekt lange woorden netjes af */
 }
+
 
 .panel__header{
   display:flex;
-  align-items:center;          /* verticaal uitlijnen */
-  justify-content:space-between; /* titel links, acties rechts */
-  gap:12px;
-
+  align-items:flex-start;          /* belangrijk op mobiel */
+  justify-content:space-between;
+  gap:10px;
   padding:12px 14px;
   border-bottom:1px solid var(--border);
 }
 
 @media (max-width: 420px){
   .panel__header{
-    padding:10px 12px;
+    flex-wrap:wrap;                /* titel kan boven, knop kan eronder */
   }
+  .panel__actions{
+    margin-left:auto;              /* knop blijft rechts uitlijnen */
+  }
+}
+
 
 .panel__body canvas{
   width: 100% !important;
@@ -158,6 +168,14 @@ body{
     height: 360px !important;
   }
 }
+
+.panel__actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-shrink:0;                   /* acties worden niet “weggeknepen” */
+}
+
 
 /* Extra hoogte voor drukkere grafieken */
 .canvas--tall{
@@ -173,8 +191,8 @@ body{
   .icon-btn{
     width:40px;
     height:40px;
-  }
 }
+
 
 .hint{
   margin-top:10px;
