@@ -11,6 +11,7 @@
 }
 
 *{ box-sizing:border-box; }
+
 body{
   margin:0;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -20,6 +21,7 @@ body{
   color:var(--text);
 }
 
+/* ===== Topbar ===== */
 .topbar{
   position:sticky;
   top:0;
@@ -33,22 +35,9 @@ body{
   backdrop-filter: blur(10px);
   border-bottom:1px solid var(--border);
 }
-.brand__title{ font-weight:850; font-size:22px; } /* was 18px */
-.brand__sub{ font-size:17px; color:var(--muted); margin-top:2px; } /* was 13px */
 
-
-.panel__body canvas{
-  width: 100%;
-  height: 280px;
-  display: block;
-}
-
-@media (orientation: landscape){
-  .panel__body canvas{
-    height: 360px;
-  }
-}
-
+.brand__title{ font-weight:850; font-size:22px; }
+.brand__sub{ font-size:17px; color:var(--muted); margin-top:2px; }
 
 .topbar__controls{
   display:flex;
@@ -56,6 +45,18 @@ body{
   gap:12px;
 }
 
+.upload-btn{
+  display:inline-flex;
+  align-items:center;
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(122,162,255,.18), rgba(122,162,255,.08));
+  cursor:pointer;
+  user-select:none;
+  font-weight:750;
+}
+.upload-btn input{ display:none; }
 
 .seg{
   display:inline-flex;
@@ -76,25 +77,14 @@ body{
   background:rgba(122,162,255,.22);
 }
 
-.upload-btn{
-  display:inline-flex;
-  align-items:center;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg, rgba(122,162,255,.18), rgba(122,162,255,.08));
-  cursor:pointer;
-  user-select:none;
-  font-weight:750;
-}
-.upload-btn input{ display:none; }
-
+/* ===== Layout ===== */
 .layout{
   max-width:1100px;
   margin:0 auto;
   padding:18px;
 }
 
+/* ===== KPI Cards ===== */
 .cards{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -110,27 +100,29 @@ body{
   box-shadow: 0 8px 24px rgba(0,0,0,.25);
 }
 
+.card__label{ font-size:13px; color:var(--muted); }
+.card__value{ font-size:22px; font-weight:850; margin-top:6px; }
 .card__sub{
   margin-top:4px;
   font-size:12px;
   color:var(--muted);
 }
 
-.card__label{ font-size:13px; color:var(--muted); }
-.card__value{ font-size:22px; font-weight:850; margin-top:6px; }
-
+/* ===== Grids ===== */
 .grid{
   margin-top:14px;
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap:12px;
 }
+
 @media (max-width: 900px){
   .grid{ grid-template-columns: 1fr; }
   .topbar{ align-items:flex-start; }
   .topbar__controls{ flex-direction:column; align-items:stretch; }
 }
 
+/* ===== Panels ===== */
 .panel{
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--border);
@@ -138,21 +130,72 @@ body{
   overflow:hidden;
   box-shadow: 0 8px 24px rgba(0,0,0,.25);
 }
-.panel__title{
+
+/* ✅ Nieuwe header (met actions) */
+.panel__header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
   padding:12px 14px;
   border-bottom:1px solid var(--border);
+}
+
+/* Titel heeft GEEN padding meer (dat doet header) */
+.panel__title{
+  margin:0;
   font-weight:850;
 }
+
+/* Actions rechts */
+.panel__actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.icon-btn{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.92);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  font-size:16px;
+  line-height:1;
+}
+.icon-btn:hover{
+  background:rgba(255,255,255,.10);
+}
+
 .panel__body{
   padding:14px;
 }
 
+/* ===== Canvas sizing (responsive) ===== */
+.panel__body canvas{
+  width:100% !important;
+  height:280px !important;
+  display:block;
+}
+
+@media (orientation: landscape){
+  .panel__body canvas{
+    height:360px !important;
+  }
+}
+
+/* ===== Hint text ===== */
 .hint{
   margin-top:10px;
   color:var(--muted);
   font-size:13px;
 }
 
+/* ===== Tables ===== */
 .table-wrap{
   width:100%;
   overflow:auto;
@@ -181,6 +224,7 @@ tr.owner{
   background: rgba(255, 138, 42, 0.12);
 }
 
+/* ===== Log ===== */
 .log{
   margin:0;
   padding:12px;
@@ -190,4 +234,73 @@ tr.owner{
   overflow:auto;
   color:rgba(234,240,255,.85);
   font-size:12px;
+}
+
+/* ===== Modal fullscreen ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  z-index:9999;
+}
+.modal.is-open{
+  display:block;
+}
+
+.modal__backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.6);
+}
+
+.modal__card{
+  position:relative;
+  max-width:1100px;
+  width:min(96vw,1100px);
+  height:min(92vh,900px);
+  margin:4vh auto;
+  background:rgba(10,16,25,.92);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:18px;
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.modal__title{
+  padding:14px 18px;
+  font-weight:800;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.modal__close{
+  position:absolute;
+  top:10px;
+  right:12px;
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.modal__body{
+  padding:14px 16px 16px;
+  flex:1;
+}
+
+.modal__canvas-host{
+  width:100%;
+  height:100%;
+}
+
+/* Canvas in modal schaalt echt mee */
+.modal__canvas-host canvas{
+  width:100% !important;
+  height:100% !important;
+  display:block;
 }

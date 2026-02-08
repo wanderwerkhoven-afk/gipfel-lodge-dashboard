@@ -41,12 +41,117 @@ const ctxFreeWeeks = document.getElementById("chartFreeWeeks");
 const gapsWrap = document.getElementById("gapsWrap");
 const ctxCumulative = document.getElementById("chartCumulative");
 
+const modal = document.getElementById("chartModal");
+const modalCanvasHost = document.getElementById("modalCanvasHost");
+const modalTitle = document.getElementById("modalTitle");
+
 
 // ========= State =========
 let rawRows = [];
 let mode = "gross"; // "gross" | "net"
+let modalState = null; // { canvas, parent, next, chart }
 
 let chartRevenueMonth, chartBookingsNights, chartRevenueChannel, chartGuestPie, chartCumulative, chartLeadTime, chartFreeWeeks;
+
+// ========= Modal logic for charts (klik op grafiek om te vergroten) =========
+function openChartModal(canvasId){
+  const canvas = document.getElementById(canvasId);
+  const chart = getChartByCanvasId(canvasId);
+  if (!canvas || !chart) return;
+
+  // onthoud originele plek
+  modalState = {
+    canvas,
+    chart,
+    parent: canvas.parentElement,
+    next: canvas.nextSibling
+  };
+
+  // titel uit panel pakken
+  const panel = canvas.closest(".panel");
+  const titleEl = panel?.querySelector(".panel__title");
+  modalTitle.textContent = titleEl?.textContent?.trim() || "Grafiek";
+
+  // open modal + verplaats canvas
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  modalCanvasHost.appendChild(canvas);
+
+  // force resize in nieuwe container
+  setTimeout(() => chart.resize(), 50);
+}
+
+function closeChartModal(){
+  if (!modalState) return;
+
+  const { canvas, chart, parent, next } = modalState;
+
+  // zet canvas terug
+  if (next) parent.insertBefore(canvas, next);
+  else parent.appendChild(canvas);
+
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  modalState = null;
+
+  // resize terug
+  setTimeout(() => chart.resize(), 50);
+}
+
+// helper om Chart instance te vinden op basis van canvas id
+function downloadChartPng(canvasId){
+  const chart = getChartByCanvasId(canvasId);
+  if (!chart) return;
+
+  const fileName = `${canvasId}-${new Date().toISOString().slice(0,10)}.png`;
+  const url = chart.toBase64Image("image/png", 1);
+
+  // Desktop download
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+
+  // iOS/Safari: download attribute werkt niet altijd -> open in new tab
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS){
+    window.open(url, "_blank");
+    return;
+  }
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// document-wide click listener voor buttons met data-action
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+
+  const action = btn.getAttribute("data-action");
+  const target = btn.getAttribute("data-target");
+
+  if (action === "expand" && target){
+    openChartModal(target);
+  }
+
+  if (action === "download" && target){
+    downloadChartPng(target);
+  }
+
+  if (action === "close"){
+    closeChartModal();
+  }
+});
+
+// Escape sluit modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList.contains("is-open")){
+    closeChartModal();
+  }
+});
+
 
 // ========= Utils =========
 function getCss(varName){
@@ -1200,6 +1305,27 @@ function rerender(){
   renderCharts(rawRows);
   renderTable(rawRows);
   log(`Render: modus = ${mode === "net" ? "Netto" : "Bruto"}`);
+}
+
+// === Helper om Chart.js instance te vinden op basis van canvas id (voor interacties)
+function getChartByCanvasId(canvasId){
+  // map jouw globale chart vars naar canvas ids
+  const map = {
+    chartRevenueMonth,
+    chartBookingsNights,
+    chartRevenueChannel,
+    chartGuestPie,
+    chartCumulative,
+    chartLeadTime,
+    chartFreeWeeks
+  };
+
+  // vind chart waarvan canvas.id matcht
+  for (const key of Object.keys(map)){
+    const ch = map[key];
+    if (ch?.canvas?.id === canvasId) return ch;
+  }
+  return null;
 }
 
 // ========= Events =========
