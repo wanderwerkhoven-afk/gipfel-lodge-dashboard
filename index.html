@@ -141,13 +141,38 @@
 
     <section class="grid">
       <div class="panel">
-        <div class="panel__title">Lead time (dagen tussen boeken en aankomst)</div>
+        <div class="panel__header">
+          <div class="panel__title">
+            Lead time (dagen tussen boeken en aankomst)
+          </div>
+
+          <div class="panel__actions">
+            <button
+              class="icon-btn"
+              type="button"
+              data-action="download"
+              data-target="chartLeadTime"
+              aria-label="Download grafiek"
+              title="Download als PNG"
+            >
+              <img
+                class="icon-btn__icon"
+                src="./assets/icons/download.png"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+
         <div class="panel__body">
-          <canvas id="chartLeadTime" height="160"></canvas>
-          <div class="hint">Geeft inzicht in last-minute vs vroegboekers.</div>
+          <canvas id="chartLeadTime"></canvas>
+          <div class="hint">
+            Geeft inzicht in last-minute vs vroegboekers.
+          </div>
         </div>
       </div>
     </section>
+
 
 <!-- (OMZET PER KANAAL is voorlopig minder relevant, geen data beschikbaar. Kan altijd later nog toegevoegd worden)
     <section class="grid">
@@ -162,22 +187,70 @@
 
     <section class="grid">
       <div class="panel">
-        <div class="panel__title">Gastenverdeling (boekingen per groepsgrootte)</div>
+        <div class="panel__header">
+          <div class="panel__title">
+            Gastenverdeling (boekingen per groepsgrootte)
+          </div>
+
+          <div class="panel__actions">
+            <button
+              class="icon-btn"
+              type="button"
+              data-action="download"
+              data-target="chartGuestPie"
+              aria-label="Download grafiek"
+              title="Download als PNG"
+            >
+              <img
+                class="icon-btn__icon"
+                src="./assets/icons/download.png"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+
         <div class="panel__body">
-          <canvas id="chartGuestPie" height="150"></canvas>
+          <canvas id="chartGuestPie"></canvas>
         </div>
       </div>
     </section>
 
+
     <section class="grid">
       <div class="panel">
-        <div class="panel__title">Vrije nachten per week (planning & kortingskansen)</div>
+        <div class="panel__header">
+          <div class="panel__title">
+            Vrije nachten per week (planning & kortingskansen)
+          </div>
+
+          <div class="panel__actions">
+            <button
+              class="icon-btn"
+              type="button"
+              data-action="download"
+              data-target="chartFreeWeeks"
+              aria-label="Download grafiek"
+              title="Download als PNG"
+            >
+              <img
+                class="icon-btn__icon"
+                src="./assets/icons/download.png"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+
         <div class="panel__body">
-          <canvas id="chartFreeWeeks" height="170"></canvas>
-          <div class="hint">0 = volledig volgeboekt, 7 = hele week vrij.</div>
+          <canvas id="chartFreeWeeks"></canvas>
+          <div class="hint">
+            0 = volledig volgeboekt, 7 = hele week vrij.
+          </div>
         </div>
       </div>
     </section>
+
 
     <section class="panel">
       <div class="panel__title">Vrije periodes (gaps) — direct actie</div>
@@ -197,13 +270,36 @@
     <!-- Booking cumulatief chart -->
     <section class="grid">
       <div class="panel">
-        <div class="panel__title">Cumulatieve omzet per boeking</div>
+        <div class="panel__header">
+          <div class="panel__title">Cumulatieve omzet per boeking</div>
+
+          <div class="panel__actions">
+            <button
+              class="icon-btn"
+              type="button"
+              data-action="download"
+              data-target="chartCumulative"
+              aria-label="Download grafiek"
+              title="Download als PNG"
+            >
+              <img
+                class="icon-btn__icon"
+                src="./assets/icons/download.png"
+                alt=""
+              />
+            </button>
+          </div>
+        </div>
+
         <div class="panel__body">
-          <canvas id="chartCumulative" height="160"></canvas>
-          <div class="hint">Hover op een punt voor omzet, datum en cumulatief totaal.</div>
+          <canvas id="chartCumulative"></canvas>
+          <div class="hint">
+            Hover op een punt voor omzet, datum en cumulatief totaal.
+          </div>
         </div>
       </div>
     </section>
+
 
     <!-- Log -->
     <section class="panel">
