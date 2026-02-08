@@ -1249,3 +1249,64 @@ fileInput.addEventListener("change", async (e) => {
     fileInput.value = ""; // allow same file re-upload
   }
 });
+
+// Chart download/share buttons actie
+function getChartByCanvasId(canvasId){
+  return Chart.getChart(canvasId) || null;
+}
+
+async function shareOrDownloadChartPNG(canvasId){
+  const chart = getChartByCanvasId(canvasId);
+  if (!chart) return;
+
+  // PNG (transparant)
+  const dataUrl = chart.toBase64Image("image/png", 1);
+
+  // DataURL -> Blob
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+
+  const fileName = `${canvasId}-${new Date().toISOString().slice(0,10)}.png`;
+  const file = new File([blob], fileName, { type: "image/png" });
+
+  // ✅ iOS/Android share sheet (als ondersteund)
+  if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share){
+    try{
+      await navigator.share({
+        files: [file],
+        title: "Gipfel Lodge grafiek",
+        text: "Grafiek export (PNG)"
+      });
+      return; // klaar
+    }catch(err){
+      // user cancelled -> geen probleem, ga niet door naar fallback tenzij je dat wil
+      return;
+    }
+  }
+
+  // Fallback iOS (en desktop): open in new tab (iOS: daarna delen -> bewaar)
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  if (isIOS){
+    window.open(dataUrl, "_blank");
+    return;
+  }
+
+  // Desktop fallback: download
+  const a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+document.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-action='download']");
+  if (!btn) return;
+
+  const target = btn.getAttribute("data-target");
+  if (!target) return;
+
+  // Belangrijk: dit gebeurt direct op click (user gesture) -> nodig voor iOS share sheet
+  shareOrDownloadChartPNG(target);
+});
