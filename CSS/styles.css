@@ -125,13 +125,36 @@ body{
   overflow:hidden;
   box-shadow: 0 8px 24px rgba(0,0,0,.25);
 }
+
 .panel__title{
+  margin:0;
+  font-weight:850;
+  white-space:nowrap;
+}
+
+.panel__header{
+  display:flex;
+  align-items:center;          /* verticaal uitlijnen */
+  justify-content:space-between; /* titel links, acties rechts */
+  gap:12px;
+
   padding:12px 14px;
   border-bottom:1px solid var(--border);
-  font-weight:850;
 }
+
 .panel__body{
   padding:14px;
+}
+
+@media (max-width: 420px){
+  .panel__header{
+    padding:10px 12px;
+  }
+
+  .icon-btn{
+    width:40px;
+    height:40px;
+  }
 }
 
 .hint{
