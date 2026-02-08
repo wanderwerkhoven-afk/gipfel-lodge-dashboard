@@ -131,11 +131,18 @@ body{
   padding:14px;
 }
 
-/* Extra ademruimte rondom charts */
+/* Default charts (bar / line) */
 .panel__body canvas{
-  padding:8px;              /* 👈 dit is de key */
-  box-sizing:border-box;
+  width:100%;
+  display:block;
 }
+
+/* Specifiek: pie charts altijd vierkant */
+#chartGuestPie{
+  max-height:360px;
+  aspect-ratio:1 / 1;
+}
+
 
 
 .panel__title{
