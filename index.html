@@ -13,6 +13,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+
 </head>
 <body>
   <header class="topbar">
@@ -258,14 +262,14 @@
 
         <div class="panel__actions">
           <button
-            class="icon-btn" 
+            class="icon-btn"
             type="button"
-            data-action="expand"
-            data-target="gapsWrap"
-            aria-label="Vergroot tabel"
-            title="Vergroot tabel"
+            data-action="download-pdf"
+            data-target="tableWrap"
+            aria-label="Download als PDF"
+            title="Download als PDF"
           >
-            ⤢
+            <img class="icon-btn__icon" src="./assets/icons/download.png" alt="">
           </button>
         </div>
       </div>
@@ -336,11 +340,10 @@
     </section>
 
 
-    <!-- Log -->
+    <!-- Log -->  
     <section class="panel">
-      <div class="panel__title">Log</div>
-      <div class="panel__body">
-        <pre id="log" class="log">Klaar om een Excel te uploaden…</pre>
+      <div class="panel__header">
+        <div class="panel__title">Log</div>
       </div>
     </section>
   </main>

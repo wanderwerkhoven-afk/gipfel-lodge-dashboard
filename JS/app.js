@@ -1310,3 +1310,30 @@ document.addEventListener("click", (e) => {
   // Belangrijk: dit gebeurt direct op click (user gesture) -> nodig voor iOS share sheet
   shareOrDownloadChartPNG(target);
 });
+
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("[data-action='download-pdf']");
+  if (!btn) return;
+
+  const targetId = btn.dataset.target;
+  const targetEl = document.getElementById(targetId);
+  if (!targetEl) return;
+
+  // iOS / mobiel vriendelijk
+  const canvas = await html2canvas(targetEl, {
+    backgroundColor: "#0b0f1a",
+    scale: window.devicePixelRatio || 2
+  });
+
+  const imgData = canvas.toDataURL("image/png");
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    format: [canvas.width, canvas.height]
+  });
+
+  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save(`${targetId}.pdf`);
+});
