@@ -1,2 +1,2 @@
 # Gipfel
-All te information you want to know about Gipfel bookings
+All the information you want to know about Gipfel bookings
