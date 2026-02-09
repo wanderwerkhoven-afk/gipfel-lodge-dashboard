@@ -1122,6 +1122,7 @@ function renderCharts(rows){
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       parsing: false,
       plugins: {
         legend: { display: true, position: "top" },
